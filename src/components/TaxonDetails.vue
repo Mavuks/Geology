@@ -1,7 +1,12 @@
 <template>
   <div>
     <h4>Taxon Detailid</h4>
+          <td>   <router-link :to="{
+                            name: 'taxon',
 
+                        }">Tagasi
+                        </router-link>
+               </td>
      <table class="table table-striped">
 
           <tbody>

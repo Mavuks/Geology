@@ -11,16 +11,24 @@
                   <option>C</option>
               </select>
 
-                <button v-on:click = "getTaxonById" v-on:change="appendQueryToUrl">Otsi</button>
+                <button v-on:click = "getTaxonById" >Otsi</button>
 
             <input type="text" v-model="search" v-on:change="appendQueryToUrl" placeholder="Otsing">
             </tr>
-                      <button :disabled="pageNumber === 0"  @click="prevPage">
-            Previous
-          </button>
-          <button :disabled="pageNumber >= pageCount -1"  @click="nextPage">
-            Next
-          </button>
+
+
+             <select v-model="size" class="form-control form-control-sm" >
+                <option disabled value="">Please select one</option>
+                  <option>50</option>
+                  <option>10</option>
+                  <option>6</option>
+              </select>
+            <button :disabled="pageNumber === 0"  @click="prevPage">
+              Previous
+            </button>
+            <button :disabled="pageNumber >= pageCount -1"  @click="nextPage">
+              Next
+            </button>
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -68,26 +76,32 @@ export default {
     return {
       pageNumber: 0,
       taxons: [],
-      search: null,
-      parameter: "ID"
+      search: '',
+      parameter: "ID",
+      numberInPage : 0,
+      size: 25
+
     };
   },
 
   props:{
-    listData:{
-      type:Array,
-      required:true
-    },
-    size:{
+
+/*     size:{
       type:Number,
       required:false,
-      default: 10
-    }
+      default: 25
+    } */
    },
   methods: {
 
       appendQueryToUrl() {
+        if(this.search !== ''){
           this.$router.push({query: {id: this.search}})
+          }else{
+            console.log("Tere")
+            this.$router.replace('/taxon')
+          }
+
       },
 
       nextPage(){
@@ -99,7 +113,7 @@ export default {
 
     retrieveTaxonToList() {
       http
-        .get("/taxon/?paginate_by=25")
+        .get("/taxon/")
         .then(response => {
           this.taxons = response.data.results;
           console.log(response.data);
