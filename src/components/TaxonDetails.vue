@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h4>Taxon Detailid</h4>
+    <h4>Taxon Details</h4>
           <td>   <router-link :to="{
                             name: 'taxon',
 
-                        }">Tagasi
+                        }">Back to list
                         </router-link>
                </td>
-     <table class="table table-striped">
+     <table class="table table-striped border border-dark">
 
           <tbody>
             <tr>
