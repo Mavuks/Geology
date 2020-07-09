@@ -3,7 +3,10 @@
     <h2>Lihtne veebirakendus kasutades vue.js</h2>
     <h4> Töös kasutan geoloogia infosüsteemi SARV avalikku APT-t.
        APIst võtan Taxon  nimelise tabeli ja tegin minimaalse otsingu ja filtreerimis süsteemi.
-       Lisaks tegin detaili vaate. </h4>
+       Lisaks tegin detaili vaate.
+       <br>
+        Otsingu süsteem töötab iga välja kohta eraldi, et kui otsida midagi siis tuleb kasutada ainult ühte välja,
+        on võimalus muuta otsinguvälja filtreerimist mille alusel otsingu fraasi otsitakse.</h4>
   </div>
 </template>
 
