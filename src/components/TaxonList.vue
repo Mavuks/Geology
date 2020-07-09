@@ -2,43 +2,49 @@
     <div class="list row">
         <div class="col-md-5">
             <h4>Taxon</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col" >Fltering</th>
 
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                  <select v-model="filtering" class="form-control form-control-sm"  >
-                    <option value = "iexact" >exact</option>
-                    <option value= "icontains">Contains</option>
-                    <option value= "istartswith">Startswith</option>
-                    <option>6</option>
-              </select>
-                  </tr>
-                </tbody>
-                <thead>
-                  <tr>
-                    <th scope="col" >ID</th>
-                    <th scope="col" >Taxon</th>
-                    <th scope="col" >Parent taxon</th>
-                    <th scope="col" >Author</th>
-                  </tr>
-                </thead>
-                <tbody class="border border-dark">
-                  <tr>
-                    <th> <input type="text" v-model="id" v-on:change="appendQueryToUrl" placeholder="Id"></th>
-                    <th><input type="text" v-model="name" v-on:change="appendQueryToUrl" placeholder="Taxon"></th>
-                    <th> <input type="text" v-model="parent_taxon" v-on:change="appendQueryToUrl" placeholder="Taxon Parent"></th>
-                    <th> <input type="text" v-model="author" v-on:change="appendQueryToUrl" placeholder="Author"></th>
+                           <form>
+                        <div class="form-row">
+                          <div class="col-2">
+                             <a>Filtering</a>
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="col-2">
+                          <select v-model="filtering" class="form-control">
+                              <option>exact</option>
+                              <option value= "icontains">Contains</option>
+                              <option value= "istartswith">Startswith</option>
+                          </select>
+                          </div>
 
-                                <button v-on:click = "getTaxon" class="btn btn-light" >Otsi</button>
-                  </tr>
-                </tbody>
-              </table>
+                        </div>
+                      </form>
+                      <br>
+                          <form>
+                        <div class="form-row">
+                          <div class="col">
+                           <input type="text" v-model="id" v-on:change="appendQueryToUrl" placeholder="ID" class="form-control">
+                          </div>
+                          <div class="col">
+                           <input type="text" v-model="name" v-on:change="appendQueryToUrl" placeholder="Taxon" class="form-control">
+                          </div>
+                          <div class="col">
+                           <input type="text" v-model="parent_taxon" v-on:change="appendQueryToUrl" placeholder="Taxon Parent" class="form-control">
+                          </div>
+                          <div class="col">
+                            <input type="text" v-model="author" v-on:change="appendQueryToUrl" placeholder="Author" class="form-control">
+                          </div>
+                          <div class="col">
+                            <input type="text" v-model="fossil"  v-on:change="appendQueryToUrl" placeholder="Fossil" class="form-control">
+                          </div>
+                           <div class="col-auto">
+                            <button v-on:click = "getTaxon" class="btn btn-light">Search</button>
+                          </div>
+                        </div>
+                      </form>
 
+                    <br>
 
             <button  class="btn btn-dark"  :disabled="pageNumber === 0"  @click="prevPage">
               Previous
@@ -46,23 +52,23 @@
             <button  class="btn btn-dark"  :disabled="pageNumber >= pageCount -1"  @click="nextPage">
               Next
             </button>
-
-
+          <br>
             <table class="table table-striped border border-dark " >
               <thead class="thead-dark">
                 <tr>
-                  <th scope="col" >ID</th>
                   <th scope="col" >Taxon</th>
                   <th scope="col" >Parent taxon</th>
                   <th scope="col" >Author</th>
+                  <th scope="col" >Fossil</th>
                   <th scope="col" >Details</th>
                 </tr>
               </thead>
               <tbody v-for="(taxon, index) in paginatedData" :key="index">
-                <td>{{taxon.id}}</td>
+
                 <td>{{taxon.taxon}}</td>
                 <td>{{taxon.parent__taxon}}</td>
                 <td>{{taxon.author_year}}</td>
+                <td>{{taxon.fossil_group__taxon}}</td>
 
                 <td>   <router-link :to="{
                             name: 'taxon-details',
@@ -71,16 +77,12 @@
                         </router-link>
                </td>
               </tbody>
-
             </table>
-
             <tr>
               <th>
                 {{pageNumber + 1 }} out of {{pageCount}}
               </th>
             </tr>
-
-
         </div>
         <div>
             <router-view @refreshData="refreshList"></router-view>
@@ -102,9 +104,11 @@ export default {
       pageNumber: 0,
       taxons: [],
       id: '',
+      search: '',
       name: '',
       parent_taxon: '',
       author: '',
+      fossil: '',
       parameter: "ID",
       numberInPage : 0,
       filtering : "exact"
@@ -137,6 +141,9 @@ export default {
         }else if(this.author !== ''){
 
             this.$router.push({query: {author: this.author}})
+        }else if(this.fossil !== ''){
+
+            this.$router.push({query: {fossil: this.fossil}})
         }else{
             this.$router.replace('/taxon/')
           }
@@ -209,6 +216,16 @@ export default {
           console.log(e);
         });
         }
+          else if(this.fossil !== ""){
+        GeologyDataService.getByFossil(this.fossil, this.filtering)
+        .then(response => {
+          this.taxons = response.data.results;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+        }
 
 
         else{
@@ -237,11 +254,11 @@ export default {
       },
 
     paginatedData(){
-      console.log(this.size)
         const start = this.pageNumber * this.size,
           end = start + this.size;
     return this.taxons.slice(start, end);
       }
+
 
 
 

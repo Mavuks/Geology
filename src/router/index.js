@@ -13,11 +13,7 @@ Vue.use(VueRouter)
     name: 'Home',
     component: Home
   },
-  {
-    path: '/about',
-    name: 'About',
 
-  },
   {
     path: '/taxon',
     name: 'taxon',
